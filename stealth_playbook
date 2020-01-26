@@ -1,0 +1,43 @@
+STEALTH INSTALL
+
+#Change file permissions across Stealth install script 
+- name: set execution bit on file, then run it
+  file:
+    path: /tmp/AP1_*
+	mode: '0755'
+  command: ./AP1_*
+  
+#Move root certificate into it's respective Stealth install path
+- name: move root cert  
+  copy: 
+    src: /tmp/
+	dest: /etc/stealth/ca-certs
+	content: '# This file was moved to /etc/stealth/ca-certs/'
+  
+#Move client certificate into it's respective Stealth install path
+- name: move client cert  
+  copy: 
+    src: /tmp/
+	dest: /etc/stealth/ssl-certs
+	content: '# This file was moved to /etc/stealth/ssl-certs'
+	
+#Move system.ini file into it's respective Stealth install path
+- name: move ini file  
+  copy: 
+    src: /tmp/
+	dest: /etc/stealth/
+    content: '# This file was moved to /etc/stealth/'
+
+#Create Passphrase for Secure Login 
+- name: add login pipeline for Unisys Team
+  shell: stuser add master passphrase | {{ passw }} 
+  
+#Start Stealth services
+- name: start stealthd, if not started 
+  service:
+  name: stealthd
+  state: started 
+  
+#Verify Stealth Conigurations 
+- name: run Stealth config stats 
+  command: stconfig -S

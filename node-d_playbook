@@ -1,0 +1,33 @@
+NODE DISCOVERY INSTALL
+
+#Ensure Node-Discovery CIFS FS loads during system boot
+- name: append 'nodediscovery' CIFS-share to /etc/fstab file
+  shell: echo '{{ CIFS-share }}' >> /etc/fstab
+    
+#Create Node-Discovery directory for mounting 
+- name: create 'nodediscovery' directory if it does not exist
+  file:
+    path: /mnt/nodediscovery
+    state: directory
+    mode: '0755'
+	
+#Mount Node-Discovery path 
+- name: mount nodediscovery
+  command: mount /mnt/nodediscovery
+	
+#Install local Node-Discovery RPM file
+- name: install nodediscovery pkg
+  shell: find /tmp -iname 'nodediscovery*.rpm' && yum install -y nodediscovery*.rpm
+
+#Inject desired nodediscovery settings/parameters into Stealth config file
+- name: set nodediscovery configuration parameters
+  shell: sed -i 's/....' 
+  
+#Start Node-Discovery services
+- name: start nodediscoveryd, if not started 
+  service:
+  name: nodediscoveryd
+  state: started 
+   
+	
+	
