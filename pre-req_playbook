@@ -1,0 +1,38 @@
+## A N S I B L E  playbook for installing Stealth's prequisites, which include various libraries,   #  utilities and programs in the form of rpm packages. Some conflicting 'Swan' packages are         #  removed as well, but Stealth will install it's own. Both pre-req installs and removals           #  are required, along with ensuring your target server(s) are properly registered with our RedHat  #  Satellite remote server.
+
+
+---
+- name: Install Stealth Required Dependencies (Pre-Reqs)
+  hosts: nodes
+  vars_files:
+    - /home/ansadm/.ansible/group_vars/all_vars.yml
+  tasks:
+    - name: 1 of 5] -> gather system info from remote node(s)
+      command: cat /etc/motd
+      check_mode: no
+
+    - name: 2 of 5] -> verify remote node is registered with Red Hat Satellite
+      command: subscription-manager list
+      check_mode: no
+
+    - name: 3 of 5] -> verify DNS letter casing, inside (/etc/hosts), for remote node(s)
+      shell: cat /etc/hosts | grep -i $(hostname)
+      check_mode: no
+
+    - name: 4 of 5] - Install RPMs -> unzip, glibc, libxml, libnfnetlink, libnetfilter_queue, iptables, libcap
+      yum:
+        name: "{{ pre_req_pkgs }}"
+        state: present
+        update_cache: true
+
+    - name: 5 of 5] - Remove RPMs -> openswan, strongswan & libreswan..
+      yum:
+        name: "{{ del_swan_pkgs }}"
+        state: absent
+        update_cache: true
+
+
+
+
+
+...
