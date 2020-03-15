@@ -1,0 +1,18 @@
+---
+- hosts: all
+  gather_facts: no
+
+  vars_files:
+    - /home/ldap/x383577/.ansible/group_vars/all_vars.yml
+
+  tasks:
+    - name: Schedule Server Downtime
+      nagios:
+          action: downtime
+          minutes: 30
+          host: targets
+          service: host
+          comment: ..placing servers into downtime...
+          command: null
+          cmdfile: /var/lib/centreon-engine/rw/centengine.cmd
+      delegate_to: nagios

@@ -1,0 +1,9 @@
+# This playbook will attempt to connect to a single server or multiple servers over a given network #
+---
+
+- hosts: localhost, targets
+  gather_facts: no
+
+  tasks:
+   - name: Connect to Host
+     ping:
