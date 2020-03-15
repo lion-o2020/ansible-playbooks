@@ -1,0 +1,20 @@
+- name: Connect to Datacenter
+  vmware_datacenter:
+    hostname: '{{ lab_vcenter }}'
+    username: '{{ vcenter_uname }}'
+    password: '{{ vcenter_pass }}'
+    datacenter_name: '{{ datacenter }}'
+    state: present
+  delegate_to: localhost 
+
+
+
+
+- name: Get all hosts from vCenter
+  uri:
+    url: "https://{{secret.hostname}}/rest/vcenter/host"
+    force_basic_auth: yes
+    validate_certs: no
+    headers:
+      Cookie: "{{login.set_cookie}}"
+  register: vchosts
