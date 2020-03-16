@@ -1,0 +1,33 @@
+
+  - name: Gather Facts of all VMs in variable machines
+    local_action:
+      module: vmware_vm_facts
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+    register: facts
+
+  - name: Find the vm folder
+    local_action:
+      module: vmware_guest_find
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: False
+      datacenter: "{{ datacenter }}"
+      name: "{{ machines }}"
+    register: vm_folder
+
+  - name: Create a snapshot
+    vmware_guest_snapshot:
+      hostname: "{{ lab_vcenter }}"
+      username: "{{ creds.username }}"
+      password: "{{ creds.password }}"
+      datacenter: "{{ lab_datacenter }}"
+      folder: "/{{ lab_datacenter }}/vm/"
+      name: "{{ tst_node }}"
+      state: present
+      snapshot_name: sample snapshot
+      description: VM snapshot testing
+    delegate_to: localhost

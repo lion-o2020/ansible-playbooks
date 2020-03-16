@@ -1,0 +1,13 @@
+---
+- name: vCenter login (api authentication)
+  uri:
+    url: "https://{{ lab_vcenter }}/rest/com/vmware/cis/session"
+    force_basic_auth: yes
+    method: POST
+    user: "{{creds.username}}"
+    password: "{{creds.password}}"
+    status_code: 200
+    validate_certs: no
+  register: login
+
+  

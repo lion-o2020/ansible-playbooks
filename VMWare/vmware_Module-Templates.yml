@@ -1,18 +1,34 @@
+[ T E M P L A T E ]
+
+- name: vCenter login (api authentication)
+  uri:
+    url: "https://{{ x_vcenter }}/rest/com/vmware/cis/session"
+    force_basic_auth: yes
+    method: POST
+    user: "{{creds.username}}"
+    password: "{{creds.password}}"
+    status_code: 200
+    validate_certs: no
+  register: login
+
+
+[ T E M P L A T E ]
+
 - name: Connect to Datacenter
   vmware_datacenter:
-    hostname: '{{ lab_vcenter }}'
-    username: '{{ vcenter_uname }}'
-    password: '{{ vcenter_pass }}'
-    datacenter_name: '{{ datacenter }}'
+    hostname: '{{ x_vcenter }}'
+    username: '{{ creds.username }}'
+    password: '{{ creds.password }}'
+    datacenter_name: '{{ x_datacenter }}'
     state: present
-  delegate_to: localhost 
+  delegate_to: localhost
 
 
-
+[ T E M P L A T E ]
 
 - name: Get all hosts from vCenter
   uri:
-    url: "https://{{secret.hostname}}/rest/vcenter/host"
+    url: "https://{{creds.x_vcenter}}/rest/vcenter/host"
     force_basic_auth: yes
     validate_certs: no
     headers:
